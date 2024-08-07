@@ -25,7 +25,7 @@ jobs:
 
       - name: Run MATLAB tests
         run: |
-          matlab -batch "results = runtests('TestProcessCSVData'); assert(~any([results.Failed]), 'One or more tests failed.');"
+          matlab -r "try, results = runtests('TestProcessCSVData'); assert(~any([results.Failed]), 'One or more tests failed.'); catch ME, disp(ME.message); exit(1); end; exit;"
 
       - name: Upload test results
         if: always()
