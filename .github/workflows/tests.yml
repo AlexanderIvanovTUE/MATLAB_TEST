@@ -23,6 +23,9 @@ jobs:
         with:
           release: latest
 
+      - name: Set License Server
+        run: echo "MLM_LICENSE_FILE=27000@your.license.server" >> $GITHUB_ENV
+
       - name: Run MATLAB tests
         run: |
           matlab -batch "results = runtests('TestProcessCSVData'); assert(~any([results.Failed]), 'One or more tests failed.');"
