@@ -23,10 +23,9 @@ jobs:
         with:
           release: latest
 
-      - name: Run MATLAB build and tests
-        uses: matlab-actions/run-build@v2
-        with:
-          command: "results = runtests('TestProcessCSVData'); assert(~any([results.Failed]), 'One or more tests failed.');"
+      - name: Run MATLAB tests
+        run: |
+          matlab -batch "results = runtests('TestProcessCSVData'); assert(~any([results.Failed]), 'One or more tests failed.');"
 
       - name: Upload test results
         if: always()
@@ -34,4 +33,3 @@ jobs:
         with:
           name: TestResults
           path: TestProcessCSVDataResults.mat
-
