@@ -2,12 +2,9 @@ name: MATLAB Unit Tests
 
 on:
   push:
-    branches:
-      - main
-      - '**/feature/**'
+
   pull_request:
-    branches:
-      - main
+
 
 jobs:
   test:
@@ -24,8 +21,7 @@ jobs:
           release: latest
 
       - name: Run MATLAB tests
-        run: |
-          matlab -r "try, results = runtests('TestProcessCSVData'); assert(~any([results.Failed]), 'One or more tests failed.'); catch ME, disp(ME.message); exit(1); end; exit;"
+        run: matlab-actions/run-tests@v2
 
       - name: Upload test results
         if: always()
