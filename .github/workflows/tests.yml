@@ -21,7 +21,7 @@ jobs:
           release: latest
 
       - name: Run MATLAB tests
-        run: matlab-actions/run-tests@v2
+        uses: matlab-actions/run-tests@v2
 
       - name: Upload test results
         if: always()
