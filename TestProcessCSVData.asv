@@ -1,5 +1,6 @@
 classdef TestProcessCSVData < matlab.unittest.TestCase
     properties
+        TestFolder
         TestCSVFile
         OutputPlotFile
     end
@@ -13,11 +14,10 @@ classdef TestProcessCSVData < matlab.unittest.TestCase
             % File paths
             testCase.TestCSVFile = fullfile(testCase.TestFolder, 'testData.csv');
             testCase.OutputPlotFile = fullfile(testCase.TestFolder, 'output_plot.png');
-            testCase.OutputCSVFile = fullfile(testCase.TestFolder, 'processed_data.csv');
         end
     end
-    
-    methods (TestMethodTeardown)
+
+     methods (TestMethodTeardown)
         function deleteTestFiles(testCase)
             % Remove the temporary test folder
             if exist(testCase.TestFolder, 'dir')
@@ -25,7 +25,7 @@ classdef TestProcessCSVData < matlab.unittest.TestCase
             end
         end
     end
-    
+
     methods (Test)
         function testValidData(testCase)
             % Test with valid data
@@ -38,23 +38,62 @@ classdef TestProcessCSVData < matlab.unittest.TestCase
             testCase.verifyTrue(isfile(testCase.OutputPlotFile));
         end
         
-        function testMissingColumns(testCase)
+        function testMissingValueColumn(testCase)
             % Test with missing columns
             time = (1:10)';
             T = table(time, 'VariableNames', {'Time'});
             writetable(T, testCase.TestCSVFile);
             
-            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'MATLAB:unassignedOutputs');
+            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'processCSVData:MissingColumns');
+        end
+
+        function testMissingTimeColumn(testCase)
+            % Test with missing columns
+            value = rand(10, 1);
+            T = table(value, 'VariableNames', {'Time'});
+            writetable(T, testCase.TestCSVFile);
+            
+            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'processCSVData:MissingColumns');
         end
         
-        function testNonNumericData(testCase)
+        function testALLNonNumericDataValue(testCase)
             % Test with non-numeric data
             time = (1:10)';
             value = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'}';
             T = table(time, value, 'VariableNames', {'Time', 'Value'});
             writetable(T, testCase.TestCSVFile);
             
-            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'MATLAB:unassignedOutputs');
+            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'processCSVData:NonNumericData');
+        end
+
+        function testNonNumericDataValue(testCase)
+            % Test with non-numeric data
+            time = (1:10)';
+            value = [rand(5, 1); 'd'; rand(4, 1)];
+            T = table(time, value, 'VariableNames', {'Time', 'Value'});
+            writetable(T, testCase.TestCSVFile);
+            
+            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'processCSVData:NonNumericData');
+        end
+
+        function testALLNonNumericDataTime(testCase)
+            % Test with non-numeric data
+            time = (1:10)';
+            value = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'}';
+            T = table(time, value, 'VariableNames', {'Time', 'Value'});
+            writetable(T, testCase.TestCSVFile);
+            
+            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'processCSVData:NonNumericData');
+        end
+
+        function testNonNumericDataTime(testCase)
+            % Test with non-numeric data
+            time = (1:10)';
+            value = [rand(5, 1); 'd'; rand(4, 1)];
+            T = table(time, value, 'VariableNames', {'Time', 'Value'});
+            writetable(T, testCase.TestCSVFile);
+            
+            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'processCSVData:NonNumericData');
         end
         
         function testMissingValues(testCase)
@@ -64,7 +103,9 @@ classdef TestProcessCSVData < matlab.unittest.TestCase
             T = table(time, value, 'VariableNames', {'Time', 'Value'});
             writetable(T, testCase.TestCSVFile);
             
-            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'MATLAB:unassignedOutputs');
+            testCase.verifyError(@() processCSVData(testCase.TestCSVFile, testCase.OutputPlotFile), 'processCSVData:unassignedOutputs');
         end
+
+        
     end
 end

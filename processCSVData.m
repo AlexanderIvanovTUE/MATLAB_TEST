@@ -29,6 +29,11 @@ function processCSVData(inputFile, outputPlotFile)
         error('processCSVData:unassignedOutputs','The "Time" and "Value" columns contain missing values (NaN).');
     end
 
+    % Check for empty values
+    if any(isempty(time)) || any(isempty(value))
+        error('processCSVData:emptyInputs','The "Time" and "Value" columns contain missing values.');
+    end
+
     % Step 3: Generate the plot
     figure; % Create a new figure window
     plot(time, value, 'b-', 'LineWidth', 2); % Plot with a blue line
