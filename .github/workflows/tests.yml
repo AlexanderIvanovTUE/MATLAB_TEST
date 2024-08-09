@@ -18,6 +18,11 @@ jobs:
 
       - name: Run MATLAB tests
         uses: matlab-actions/run-tests@v2
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
         with:
-          code-coverage: true  # Enable code coverage report
+          name: TestResults
+          path: TestProcessCSVDataResults.mat
 
