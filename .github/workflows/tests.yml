@@ -5,11 +5,8 @@ on: push
 jobs:
   test:
     name: Run MATLAB Unit Tests
-    runs-on: ${{ matrix-os}}
+    runs-on: [macos-latest, windows-latest, ubuntu-latest]
 
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
       - name: Checkout repository
